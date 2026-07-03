@@ -1,33 +1,38 @@
 services:
   backend:
-    build:
-      context: ./
-      dockerfile: Dockerfile
+    image: juanne123/finances-backend:d45e369
     environment:
       POSTGRES_HOST: database
-      POSTGRES_PORT: ${POSTGRES_PORT}
-      POSTGRES_DATABASE: ${POSTGRES_DATABASE}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_CREATE_DROP: ${POSTGRES_CREATE_DROP}
-      SECRET_KEY: ${SECRET_KEY}
-      JWT_EXPIRATION_TIME: ${JWT_EXPIRATION_TIME}
-      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
-      SWAGGER_ENABLED: ${SWAGGER_ENABLED}
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: finances
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_CREATE_DROP: update
+      SECRET_KEY: 8a1cb083feb4f2f466da5d352245b478a46c57f7cf2da1536ad46ebdd4a37071
+      JWT_EXPIRATION_TIME: 3600000
+      CORS_ALLOWED_ORIGINS: http://localhost:4200
+      SWAGGER_ENABLED: false
     ports:
       - "8080:8080"
     depends_on:
       - database
 
+  frontend:
+    image: juanne123/finances-frontend:c35a7e8
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+
   database:
     image: postgres:16.3
     restart: always
     environment:
-      POSTGRES_DB: ${POSTGRES_DATABASE}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: finances
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
